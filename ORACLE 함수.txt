@@ -1,0 +1,55 @@
+오라클 함수
+. upper(문자열): 괄호 안 문자를 모두 대문자로 변환	
+. LOWER(문자열): 괄호 안 문자를 모두 소문자로 변환
+. INITCAP(문자열) : 괄호 안 문자의 첫 글자를 대문자로 변환후 외 소문자로 변환 
+EX)
+SELECT
+	ENAME , UPPER(ENAME), LOWER(ENAME), INITCAP(ENAME)  
+FROM
+	EMP e ;
+
+2)LENGTH(문자열): 괄호안 문자열의 길이 제공
+. LENGTHB(문자열): 괄호안의 문자열의 바이트수 제공 단, 버전에 따라 한글 바이트수 다름
+
+EX)
+SELECT  LENGTH('한글')
+FROM DUAL ;
+-- 한글의 문자 하나당 3BYTE 사용
+SELECT  LENGTHB('한글')
+FROM DUAL ;문자열 함수
+
+
+3)SUBSTR(문자열 데이터, 시작위치, 추출길이) 문자열 일부 추출
+. SUBSTR(문자열 데이터, 시작위치) : 시작 위치에서 마지막까지 추출
+. SUBSTR(문자열 데이터, -시작위치, 추출길이) : 역순으로 시작부터 마지막까지 추출
+EX)
+SELECT
+	JOB , SUBSTR(JOB, 3, 2), SUBSTR(JOB, 1 , 2 ), SUBSTR(JOB, 5 )  
+FROM
+	EMP e  ; 
+SELECT
+	JOB , SUBSTR(JOB, -3, 2), SUBSTR(JOB, -1 , 2 ), SUBSTR(JOB, -5 )  
+FROM
+	EMP e  ; 
+
+4)INSTR(문자열데이터, 위치를 찾으려는 문자, 시작위치 ,시작위치에서 몇번째 위치)
+  문자열 데이터  안에서 특정 문자 위치 찾기
+
+5)REPLACE: 특정 문자를 다른 문자로 대체
+	   ERPLACE(문자열데이터, 찾는문자 , 변경할 문자)
+
+6)CONCAT(문자열 데이터1, 문자열 데이터 2) : 두 문자열 데이터를 합하는 함수
+
+7) TRIM(삭제옵션(선택), 삭제할 문자)	: 공백 제거 해주는 함수
+
+
+--2. 숫자함수 : 숫자데이터에 적용하는 함수
+
+-- 반올림 ROUND()
+	
+-- 올림 CEIL()
+	
+-- 버림 TRUNC(), FLOOR()
+	
+-- 나머지 값 MOD()
+
