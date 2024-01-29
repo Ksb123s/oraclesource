@@ -1227,7 +1227,7 @@ WHERE
 --삭제
 -- DELETE 테이블명 WHRE 조건
 -- DELETE FROM 테이블명 WHRE 조건
-
+-- lcok => 한 세션에서 트랜잭션 작업이 완료되지 않으면 다른 세션에서 작업을 처리할 수 없는 상태(DML - insert, update, delete)
 
 DELETE DEPT_TEMP WHERE DEPTNO = 20;
 
@@ -1313,18 +1313,10 @@ INSERT
 	SAL,
 	COMM,
 	DEPTNO)
-VALUES(7201, 'TEST_USER1', 'MANAGER', 7788,'2016-01-02', 4500, NULL, 50),
-VALUES(7202, 'TEST_USER2', 'CLERK', 7201,'2016-02-21', 1800,NULL , 50),
-VALUES(7203, 'TEST_USER3', 'ANALYST', 7201,'2016-04-11', 3400, NULL, 60),
-VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201,'2016-05-31', 2700, 300, 60),
-VALUES(7205, 'TEST_USER5', 'CLERK', 7201,'2016-07-20', 2600, NULL, 70),
-VALUES(7206, 'TEST_USER6', 'CLERK', 7201,'2016-09-08', 2600,NULL , 70),
-VALUES(7207, 'TEST_USER7', 'LECTURER', 7201,'2016-10-28', 2300,NULL , 80),
-VALUES(7208, 'TEST_USER8', 'STUDENT', 7201,'2018-03-09', 1200,NULL , 80);
-
+VALUES(7201, 'TEST_USER1', 'MANAGER', 7788,'2016-01-02', 4500, NULL, 50);
 INSERT
 	INTO
-	EMP_TEMP2 (EMPNO,
+	EXAM_EMP(EMPNO,
 	ENAME,
 	JOB,
 	MGR,
@@ -1332,73 +1324,77 @@ INSERT
 	SAL,
 	COMM,
 	DEPTNO)
-VALUES(7201,
-'TEST_USER1',
-'MANAGER',
-7788,
-'2016-01-02',
-4500,
-NULL,
-50),
-(7202,
-'TEST_USER2',
-'CLERK',
-7201,
-'2016-02-21',
-1800,
-NULL ,
-50),
-(7203,
-'TEST_USER3',
-'ANALYST',
-7201,
-'2016-04-11',
-3400,
-NULL,
-60),
-(7204,
-'TEST_USER4',
-'SALESMAN',
-7201,
-'2016-05-31',
-2700,
-300,
-60),
-(7205,
-'TEST_USER5',
-'CLERK',
-7201,
-'2016-07-20',
-2600,
-NULL,
-70),
-(7206,
-'TEST_USER6',
-'CLERK',
-7201,
-'2016-09-08',
-2600,
-NULL ,
-70),
-(7207,
-'TEST_USER7',
-'LECTURER',
-7201,
-'2016-10-28',
-2300,
-NULL ,
-80),
-(7208,
-'TEST_USER8',
-'STUDENT',
-7201,
-'2018-03-09',
-1200,
-NULL ,
-80);
-COMMIT;
+VALUES(7202, 'TEST_USER2', 'CLERK', 7201,'2016-02-21', 1800,NULL , 50);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7203, 'TEST_USER3', 'ANALYST', 7201,'2016-04-11', 3400, NULL, 60);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7204, 'TEST_USER4', 'SALESMAN', 7201,'2016-05-31', 2700, 300, 60);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7205, 'TEST_USER5', 'CLERK', 7201,'2016-07-20', 2600, NULL, 70);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7206, 'TEST_USER6', 'CLERK', 7201,'2016-09-08', 2600,NULL , 70);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7207, 'TEST_USER7', 'LECTURER', 7201,'2016-10-28', 2300,NULL , 80);
+INSERT
+	INTO
+	EXAM_EMP(EMPNO,
+	ENAME,
+	JOB,
+	MGR,
+	HIREDATE,
+	SAL,
+	COMM,
+	DEPTNO)
+VALUES(7208, 'TEST_USER8', 'STUDENT', 7201,'2018-03-09', 1200,NULL , 80);
 
 
+
+--3
 UPDATE EXAM_EMP 
 SET  DEPTNO = 70 
 WHERE
@@ -1410,13 +1406,211 @@ WHERE
 	WHERE
 		DEPTNO = 50);
 COMMIT;
-		
+-- 4
+UPDATE EXAM_EMP 
+SET  DEPTNO = 80 ,sal =  sal + sal * 1.1  
+WHERE
+	HIREDATE  > (
+	SELECT
+		min(HIREDATE)
+	FROM
+		EXAM_EMP 
+	WHERE
+		DEPTNO = 60);
+COMMIT;
+--5 
+DELETE
+FROM
+	EXAM_EMP 
+WHERE
+	empno IN (
+	SELECT
+		empno
+	FROM
+		EXAM_EMP e 
+	JOIN EXAM_SALGRADE  s ON
+		E.SAL BETWEEN S.LOSAL AND S.HISAL
+		AND S.GRADE = 5);
 
 
-SELECT 
-FROM EXAM_EMP ee 
-WHERE SAL > (SELECT AVG(EE.SAL)
-FROM EXAM_EMP ee 
-WHERE EE.DEPTNO  = 50)
 
+
+
+
+
+
+--tansaction
+-- 하나의 작업 또는 밀접하게 연관되어 있는 작업 수행을 위해 나눌수 없는 최소 작업 단위
+-- 최종반영(commit) , 모두 취소(rollback)
 	
+-- dbeaver 설정에서 커밋 모드 변경 가능
+--auto commit 상태
+	
+INSERT INTO DEPT_TEMP  values(55, 'NETWORK', 'SEOUL');
+
+UPDATE  DEPT_TEMP SET LOC ='BUSAN' WHERE DEPTNO = 55;
+
+COMMIT;
+ROLLBACK;  --commit 하기전에 실행 
+
+SELECT  *FROM DEPT_TEMP dt ;
+
+--oracle - commit, rollback 하기 쉬운 편
+
+--mysql - mysql workbench, 에디터(auto 커밋)
+
+DELETE  FROM  DEPT_TEMP  WHERE deptno = 55;
+UPDATE DEPT_TEMP  SET DNAME  = 'WEB' WHERE DEPTNO  = 10;
+
+
+--sql 1, DDl 정의 2. DML select, insert, update, delete, 3 . DCL(권한부여)
+
+--데이터 정의어 (DDL)
+-- 테이블 정의, 사용자 정의, 권한부여 (취소)
+--create
+
+--1 테이블 생성
+--create table 테이블명(
+-- 필드명 필드타입(크기) 제약조건,
+--);
+-- 열 이름 규칙
+-- 문자로 시작 30byte 이하로 작성 / 한테이블 안 열 이름 중복 불가
+-- 열 이름은 문자 , 0-9, 특수문자($,#, _) 사용가능
+-- sql 키워드는 열 이름으로 사용 불가(order, group, select ...등)
+CREATE TABLE EMP_DDL (
+	EMPNO NUMBER(4),
+	ENAME VARCHAR2(10),
+	JOB VARCHAR2(9),
+	MGR NUMBER(4),
+	hiredate DATE,
+	sal number(7,2),
+	comm number(7,2),
+	DEPTNO number(2)
+);
+
+SELECT  * FROM EMP_DDL ed ;
+
+--문자
+-- 1) char 2) varchar2 3) NCHAR, 4) NVARCHAR 5) CLOB 6) NCLOB 7) LONG
+--char or varchar : 열의 너비가 고정값인지 가변인지
+-- char(10) : 'hong' 무조건 10자리 사용
+-- varchar2(10): 'hong' 입력된 글자에 따라 가변
+-- nchar(10) : ' hong' 유니코드 문자열 타입 , 고정
+-- nvarchar2(10): 'hong' 유니코드 문자열 , 가변
+--varchar2 ,char : 한글 영문 입력시 사용하는 바이트 수가 다른ㅁ
+--nvarchar, nchar : 사용하는 바이트수 통일
+-- clob : 문자열 데이터를 외부 파일로 저장 , 많은 텍스트 데이터 입력시 사용 (4기가)
+-- long : 2기가
+
+
+--숫자
+--NUMBER(전체 자릿수, 소수점 자릿수)
+--BINARY_FLOAT, BINARY_DOUBLE
+
+--날짜
+
+
+--기본 열 구조만 복사 후 새 테이블 생성
+CREATE  TABLE EMP_TEMP2 AS SELECT * FROM EMP WHERE 1<>1;
+SELECT  * FROM EMP_DDL ed ;
+
+--DDL : CLEATE ALTER
+--2 테이블 변경
+--1) 열 추가
+--ALTER TABLE 테이블 명 ADD 추가할 열이음 테이터타입(10)
+--EMP_DDL 새로운 컬럼 추가 hp
+
+ALTER TABLE EMP_DDL  ADD HP varchar2(15);
+
+--2) 열 이름변경
+-- ALTER TABLE 테이블 명 RENAME COLUMN 기존 이름  to 바꿀이름
+-- hp -> MOBILE
+ALTER TABLE EMP_DDL  RENAME COLUMN HP  to MOBILE;
+--3) 열 자료형 변경
+-- ALTER TABLE 테이블명 MODIFY 열이름 테이터타입(20)
+-- EMPNO NUMBER(5)
+ALTER TABLE EMP_DDL  MODIFY EMPNO NUMBER(5);
+
+
+--4_) 열제거
+-- ALTER TABLE 테이블명 DROP COLUMN 열이름;
+
+ALTER TABLE EMP_DDL  DROP COLUMN MOBILE;
+
+--테이블 이름 변경
+--RENAME 변경전 테이블명 to 변경할 테이블명
+--EMPDDL EMP ALTER
+RENAME EMP_DDL TO EMP_ALTER;
+SELECT * 
+FROM EMP_ALTER ea ;
+
+--삭제 : DROP
+--DROP TABLE 테이블명
+DROP TABLE EMP_ALTER ;
+
+
+-- VIEW : 가상테이블
+
+--CREATE VIEW 뷰이름 AS (SELECT * FROM 원본테이블명);
+-- 권한 ㅏ진 사용자만 생성할수 있음
+--VIEW 를 통해 원본 수정 가능
+CREATE VIEW VM_EMP20 AS (SELECT * FROM EMP WHERE DEPTNO = 20);
+SELECT * FROM VM_EMP20;
+
+--VIEW 를 통해 데이터 삽입 시 원본에도 영향을 미침
+INSERT INTO VM_EMP20 
+valuES(8888,'HONG', 'ANALYST', 7902, SYSDATE, 2500, NULL, 20); 
+SELECT * FROM VM_EMP20;
+SELECT * FROM EMP;
+
+SELECT * FROM USER_UPDATABLE_COLUMNS  WHERE TABLE_NAME = 'VM_EMP20';
+
+--CREATE VIEW 뷰이름 AS (SELECT * FROM 원본테이블명) WITH READ ONLY;
+--view 를통해서 읽기만 가능
+CREATE VIEW VM_EMP30 AS (SELECT * FROM EMP WHERE DEPTNO = 30) WITH READ ONLY;
+SELECT * FROM USER_UPDATABLE_COLUMNS  WHERE TABLE_NAME = 'VM_EMP30';
+
+/* VIEW 삭제*/
+DROP VIEW VM_EMP20 ;
+
+/*    INDEX 생성 , 삭제
+ * INDEX (색인, 목차)
+ * 인덱스 : 기본키 ,고유키 일 떄 자동으로 생성됨
+ * CREATE INDEX 인덱스명 ON 테이블명(인덱스로 사용할 필드명)
+ * 
+ */
+
+CREATE INDEX IDX_EMP_SAL ON EMP(SAL);
+
+SELECT *	FROM USER_IND_COLUMNS;
+
+DROP INDEX IDX_EMP_SAL;
+
+/*시퀀스 생성/삭제
+ * 오라클 만의 객체
+ * 오라클 객체 ,하나씩 증가하는 값이 필요 할 때 주로 사용
+ * 다른 DB의 AUTO_INCREMENT 과 동일한 작업 
+ * CREATE SEQUENCE 시퀀스명 INCREMENT BY 증감값 START WITH 시작값 MAXVALUE 최대값 MINVALUE 최소값 NOCYCLE CACHE 숫자; 
+ */
+
+
+/* 1에서 시작 ~ 99999999999999999999999999
+ * 1식 증가하면서 숫자 생성
+ */
+CREATE SEQUENCE DEPT_SEQ;
+SELECT  *FROM USER_SEQUENCES ;
+DROP SEQUENCE DEPT_SEQ;
+
+CREATE TABLE dept_sequence AS SELECT * FROM dept WHERE 1<>1;
+
+CREATE SEQUENCE DEPT_SEQ INCREMENT BY 10 START WITH 10 MAXVALUE 90 MINVALUE 0 nocycle cache 2;
+
+INSERT INTO dept_sequence(deptno, dname , loc)
+VALues(DEPT_SEQ.NEXTVAL, 'DATABASE', 'SEOUL');
+
+SELECT * FROM dept_sequence;
+
+ALTER SEQUENCE DEPT_SEQ INCREMENT BY 3 MAXVALUE 99 CYCLE;
+
+--맞지막으로 생성된 시퀀스 확인
+SELECT DEPT_SEQ.CURRVAL FROM DUAL;
